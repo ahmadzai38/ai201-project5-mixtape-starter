@@ -20,7 +20,7 @@ I used AI to help me understand the structure of the codebase, explain unfamilia
 - `services/notification_service.py`: Handles notification logic. `create_notification()` creates a notification record. `add_to_playlist()` adds a song to a playlist and notifies the original song sharer if someone else added their song. `rate_song()` creates or updates a song rating. `get_notifications()` returns a user's notifications, and `mark_as_read()` marks one notification as read.
 - `services/playlist_service.py`: Handles playlist creation and playlist retrieval logic. `create_playlist()` creates a playlist for a user. `get_playlist_songs()` gets the songs inside a playlist ordered by their playlist position. `get_playlist()` returns playlist metadata, and `get_user_playlists()` returns playlists created by one user.
 - `seed_data.py`: Resets and fills the database with test data. It creates users, friendships, tags, songs, listening events, playlists, playlist entries, ratings, and notifications. This file is useful for reproducing the bugs because it creates the app state needed to test search duplicates, listening-now results, playlist songs, streaks, and notifications.
-- `tests/`: Contains automated tests for some app features, including streaks, search, and playlists. These tests can help check whether a fix breaks existing behavior.:
+- `tests/`: Contains automated tests for some app features, including streaks, search, and playlists. These tests can help check whether a fix breaks existing behavior.
 
 ### Data Flow Example
 
@@ -62,8 +62,7 @@ Steps:
 - `search_service.py` imports tag-related objects, but the current search filter only checks song title and artist.
 - Notifications are stored as `Notification` rows in the database.
 - `add_to_playlist()` creates a notification after a playlist action.
-- `rate_song()` saves the rating, but it does not currently create a notification for the original song sharer.
-- Playlist song order comes from the `position` column in the `playlist_entries` join table.
+- Before the fix, `rate_song()` saved the rating but did not create a notification for the original song sharer. This helped identify Issue #4.- Playlist song order comes from the `position` column in the `playlist_entries` join table.
 - `get_playlist_songs()` queries songs in order, then converts each song to a dictionary before returning them.
 - `seed_data.py` creates realistic test data so the bugs can be reproduced without manually creating every user, song, and playlist.
 - Some seed data is intentionally connected to the bugs. For example, songs with multiple tags help expose the duplicate search issue, older listening events help expose the listening-now issue, and existing playlist notifications show the expected notification pattern.
