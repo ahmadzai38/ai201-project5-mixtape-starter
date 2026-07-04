@@ -2,7 +2,17 @@
 
 ## AI Usage
 
-I used AI to help me understand the structure of the codebase, explain unfamiliar functions, and trace how routes connect to service functions. I did not rely on AI alone to guess fixes. For each bug, I reproduced the issue first, read the relevant route and service code, then verified the fix by running the app or tests.
+## AI Usage
+
+I used AI during codebase orientation and debugging in specific ways.
+
+First, I pasted files like `app.py`, `models.py`, and the route files into AI and asked it to summarize what each file was responsible for. This helped me build the codebase map, but I verified the summaries myself by reading the files and checking how the routes imported service functions.
+
+Second, I used AI to help trace call chains. For example, I traced `POST /songs/<song_id>/listen` from `routes/songs.py` to `record_listening_event()` and then to `update_listening_streak()` in `services/streak_service.py`. I verified the issue by running `python -m pytest tests/test_streaks.py`.
+
+Third, for the notification issue, I used AI to compare `add_to_playlist()` and `rate_song()` in `services/notification_service.py`. The comparison helped me notice that playlist actions created notifications, but rating actions did not. I did not accept that as the answer automatically; I verified it by running `python seed_data.py` and then using a Python command to check the notification count before and after calling `rate_song()`.
+
+AI helped me understand and trace the code, but I verified the fixes by reproducing the bugs and running the tests.
 
 ## Codebase Map
 
@@ -202,4 +212,5 @@ All 13 tests passed, so the fix did not break the existing playlist, search, or 
 
 ## Git Log Screenshot
 
-I included a screenshot of `git log --oneline` showing one separate `fix:` commit per bug fix.
+
+I included `git-log-screenshot.png` in this repository. It shows `git log --oneline` on the `bugfix/mixtape` branch with three separate `fix:` commits.
